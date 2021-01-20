@@ -8,7 +8,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.bytebyte6.getimage"
+        applicationId "com.bytebyte6.image"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1

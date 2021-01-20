@@ -1,4 +1,4 @@
-package com.bytebyte6.getimage
+package com.bytebyte6.image
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.bytebyte6.getimage
+package com.bytebyte6.image
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
