@@ -1,2 +1,3 @@
+include ':GetImage'
 include ':app'
 rootProject.name = "GetImage"
