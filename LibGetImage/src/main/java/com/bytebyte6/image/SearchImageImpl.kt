@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document
 
 interface Strategy {
     fun result(doc: Document): String
+    fun results(doc: Document): List<String>
 }
 
 object IuscStrategy : Strategy {
@@ -15,9 +16,21 @@ object IuscStrategy : Strategy {
         iusc.forEach {
             val json = it.attr("m")
             val bingImage = gson.fromJson(json, BingImage::class.java)
-            return bingImage.turl
+            return bingImage.murl
         }
         return ""
+    }
+
+    override fun results(doc: Document): List<String> {
+        val list = mutableListOf<String>()
+        val iusc = doc.getElementsByClass("iusc")
+        iusc.forEach {
+            val json = it.attr("m")
+            val bingImage = gson.fromJson(json, BingImage::class.java)
+            list.add(bingImage.turl)
+            list.add(bingImage.murl)
+        }
+        return list
     }
 }
 
@@ -28,23 +41,29 @@ object ImgStrategy : Strategy {
             val image = src.attr("abs:src")
             val width = src.attr("width")
             val height = src.attr("height")
-            if (image.isNotEmpty()
-                && width.isNotEmpty()
-                && width.toInt() > 100
-                && height.isNotEmpty()
-                && height.toInt() > 100
-            ) {
+            if (image.isNotEmpty() && width.isNotEmpty() && width.toInt() > 100 && height.isNotEmpty() && height.toInt() > 100) {
                 return image
             }
         }
         return ""
     }
+
+    override fun results(doc: Document): List<String> {
+        val list = mutableListOf<String>()
+        val imgs = doc.getElementsByTag("img")
+        for (src in imgs) {
+            val image = src.attr("abs:src")
+            val width = src.attr("width")
+            val height = src.attr("height")
+            if (image.isNotEmpty() && width.isNotEmpty() && width.toInt() > 100 && height.isNotEmpty() && height.toInt() > 100) {
+                list.add(image)
+            }
+        }
+        return list
+    }
 }
 
- class SearchImageImpl : SearchImage {
-    override val strategys: List<Strategy>
-        get() = mutableListOf(ImgStrategy, IuscStrategy)
-
+class SearchImageImpl : SearchImage {
     override fun search(key: String): String {
         urls.forEach { urlProvider ->
             val url = urlProvider.provide(key)
@@ -58,16 +77,33 @@ object ImgStrategy : Strategy {
         }
         return ""
     }
+
+    override fun searchs(key: String): List<String> {
+        val list = mutableListOf<String>()
+        urls.forEach { urlProvider ->
+            val url = urlProvider.provide(key)
+            val doc = Jsoup.connect(url).get()
+            strategys.forEach {
+                val result = it.result(doc)
+                if (result.isNotEmpty()) {
+                    list.add(result)
+                }
+            }
+        }
+        return list
+    }
 }
 
 interface SearchImage {
-
     val strategys: List<Strategy>
+        get() = mutableListOf(ImgStrategy, IuscStrategy)
 
     val urls: List<UrlProvider>
         get() = mutableListOf(BingUrlProvider())
 
     fun search(key: String): String
+
+    fun searchs(key: String): List<String>
 }
 
 interface UrlProvider {
@@ -76,6 +112,6 @@ interface UrlProvider {
 
 class BingUrlProvider : UrlProvider {
     override fun provide(key: String): String {
-        return "https://cn.bing.com/images/search?q=${key}"
+        return "https://cn.bing.com/images/search?q=${key.replace("&"," ")}"
     }
 }
