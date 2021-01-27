@@ -64,6 +64,11 @@ object ImgStrategy : Strategy {
 }
 
 class SearchImageImpl : SearchImage {
+
+    override val strategys: List<Strategy> = mutableListOf(ImgStrategy, IuscStrategy)
+
+    override val urls: List<UrlProvider> = mutableListOf(BingUrlProvider())
+
     override fun search(key: String): String {
         urls.forEach { urlProvider ->
             val url = urlProvider.provide(key)
@@ -96,10 +101,8 @@ class SearchImageImpl : SearchImage {
 
 interface SearchImage {
     val strategys: List<Strategy>
-        get() = mutableListOf(ImgStrategy, IuscStrategy)
 
     val urls: List<UrlProvider>
-        get() = mutableListOf(BingUrlProvider())
 
     fun search(key: String): String
 
