@@ -2,8 +2,6 @@ package com.bytebyte6.image
 
 import org.junit.Test
 
-import org.junit.Assert.*
-
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -12,9 +10,9 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        val searchImage=SearchImageImpl()
-        (searchImage.searchs("china+country+flag").forEach {
+        val searchImage = SearchImageImpl()
+        searchImage.searchs("china+country+flag").forEach {
             println(it)
-        })
+        }
     }
 }
