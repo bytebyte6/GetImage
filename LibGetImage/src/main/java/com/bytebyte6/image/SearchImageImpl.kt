@@ -89,9 +89,9 @@ class SearchImageImpl : SearchImage {
             val url = urlProvider.provide(key)
             val doc = Jsoup.connect(url).get()
             strategys.forEach {
-                val result = it.result(doc)
+                val result = it.results(doc)
                 if (result.isNotEmpty()) {
-                    list.add(result)
+                    list.addAll(result)
                 }
             }
         }
