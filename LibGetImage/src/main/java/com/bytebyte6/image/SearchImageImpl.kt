@@ -10,13 +10,17 @@ interface Strategy {
 }
 
 object IuscStrategy : Strategy {
+    var quality = Quality.BIG
     private val gson = Gson()
     override fun result(doc: Document): String {
         val iusc = doc.getElementsByClass("iusc")
         iusc.forEach {
             val json = it.attr("m")
             val bingImage = gson.fromJson(json, BingImage::class.java)
-            return bingImage.murl
+            return when (quality) {
+                Quality.BIG -> bingImage.turl
+                Quality.NORMAL -> bingImage.murl
+            }
         }
         return ""
     }
@@ -41,7 +45,12 @@ object ImgStrategy : Strategy {
             val image = src.attr("abs:src")
             val width = src.attr("width")
             val height = src.attr("height")
-            if (image.isNotEmpty() && width.isNotEmpty() && width.toInt() > 100 && height.isNotEmpty() && height.toInt() > 100) {
+            if (image.isNotEmpty() &&
+                width.isNotEmpty() &&
+                width.toInt() > 100 &&
+                height.isNotEmpty() &&
+                height.toInt() > 100
+            ) {
                 return image
             }
         }
@@ -55,7 +64,12 @@ object ImgStrategy : Strategy {
             val image = src.attr("abs:src")
             val width = src.attr("width")
             val height = src.attr("height")
-            if (image.isNotEmpty() && width.isNotEmpty() && width.toInt() > 100 && height.isNotEmpty() && height.toInt() > 100) {
+            if (image.isNotEmpty() &&
+                width.isNotEmpty() &&
+                width.toInt() > 100 &&
+                height.isNotEmpty() &&
+                height.toInt() > 100
+            ) {
                 list.add(image)
             }
         }
@@ -65,7 +79,7 @@ object ImgStrategy : Strategy {
 
 class SearchImageImpl : SearchImage {
 
-    override val strategys: List<Strategy> = mutableListOf(ImgStrategy, IuscStrategy)
+    override val strategys: List<Strategy> = mutableListOf(IuscStrategy, ImgStrategy)
 
     override val urls: List<UrlProvider> = mutableListOf(BingUrlProvider())
 
@@ -115,6 +129,6 @@ interface UrlProvider {
 
 class BingUrlProvider : UrlProvider {
     override fun provide(key: String): String {
-        return "https://cn.bing.com/images/search?q=${key.replace("&"," ")}"
+        return "https://cn.bing.com/images/search?q=${key}"
     }
 }
