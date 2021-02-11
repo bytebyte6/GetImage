@@ -11,6 +11,6 @@ allprojects {
 
 ```css
 dependencies {
-	implementation 'com.github.bytebyte6:GetImage:5.0'
+	implementation 'com.github.bytebyte6:GetImage:6.0'
 }
 ```
