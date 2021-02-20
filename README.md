@@ -3,14 +3,14 @@
 
 ```css
 allprojects {
-	repositories {
-		maven { url 'https://jitpack.io' }
-	}
+    repositories {
+	maven { url 'https://jitpack.io' }
+    }
 }
 ```
 
 ```css
 dependencies {
-	implementation 'com.github.bytebyte6:GetImage:6.0'
+    implementation 'com.github.bytebyte6:GetImage:6.0'
 }
 ```
