@@ -1,5 +1,6 @@
 # GetImage  
-输入关键字获取一张或多张图片链接
+输入关键字获取一张或多张图片链接  
+get image link by a keyword.
 
 ```css
 allprojects {
